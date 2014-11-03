@@ -22,22 +22,23 @@ USE_GITHUB=	yes
 GH_ACCOUNT=	waitman
 GH_PROJECT=	dcraw-m
 GH_TAGNAME=	${GH_COMMIT}
-GH_COMMIT=	1b90326
+GH_COMMIT=	364ca99
+
+CFLAGS += 	-Wall -Werror -I${LOCALBASE}/include \
+		`MagickWand-config --cflags --cppflags` \
+		-DMAGICKCORE_HDRI_ENABLE=0 \
+		-DMAGICKCORE_QUANTUM_DEPTH=16 \
+		-DNO_JASPER
+LDFLAGS +=	`MagickWand-config --ldflags --libs` -lm -llcms2 -ljpeg
+LIBS    ?=      -L${LOCALBASE}/lib
 
 PLIST_FILES=	bin/dcraw-m
 
-OPTIONS_DEFINE=	OPTIMIZE_O3 OPTIMIZE_O4
-OPTIMIZE_O3_DESC=	Use O3 with clang (O4 not working)
-OPTIMIZE_O4_DESC=	Use O4 with gcc
+do-build:
+	@cd ${WRKSRC}/&& ${CC} ${CFLAGS} ${LIBS} ${LDFLAGS} \
+	-o ${PORTNAME} ${PORTNAME}.c
 
-.include <bsd.port.options.mk>
-
-.if ${PORT_OPTIONS:MOPTIMIZE_O3}
-CFLAGS+=	-O3
-.else
-.if ${PORT_OPTIONS:MOPTIMIZE_O4}
-CFLAGS+=	-O4
-.endif
-.endif
+do-install:
+	${INSTALL_PROGRAM} ${WRKSRC}/${PORTNAME} ${STAGEDIR}${PREFIX}/bin/
 
 .include <bsd.port.mk>
