@@ -22,7 +22,7 @@ USE_GITHUB=	yes
 GH_ACCOUNT=	waitman
 GH_PROJECT=	dcraw-m
 GH_TAGNAME=	${GH_COMMIT}
-GH_COMMIT=	364ca99
+GH_COMMIT=	1392579
 
 CFLAGS += 	-Wall -Werror -I${LOCALBASE}/include \
 		`MagickWand-config --cflags --cppflags` \
